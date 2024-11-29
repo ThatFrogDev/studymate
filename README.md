@@ -12,8 +12,7 @@ _Coming soon 👀_: User settings, an option to block websites, a logo (of cours
 **Note:** My friend Froxcey will do the art, and since he got a lot of papers to finish, the art-related things won't be in it before Christmas. _What nice of a Christmas present! 🎄✨_
 
 ## Demo video
-<video width="600" controls>
-    <source src="./static/studymate-v0.1-demo.mp4" type="video/mp4">
+<video width="600" controls src="https://github.com/user-attachments/assets/ec602e22-f3ec-4e99-9080-dabb993cc5f2" type="video/mp4">
     Your browser does not support the video tag.
 </video>
 
