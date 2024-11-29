@@ -1,0 +1,24 @@
+name: Create new release # Right now there's only support for GitHub Releases, but will add support to publish to Chrome Web Store and Firefox and Edge later.
+
+on:
+  pull_request:
+    tags:
+      - "v*.*.*"
+    branches:
+      - $default-branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Zip the extension files
+        run: |
+          wxt zip
+          wxt zip:firefox
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: CHANGELOG.md
+          files: |
+            .output/*.zip
