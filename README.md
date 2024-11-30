@@ -1,9 +1,9 @@
 # StudyMate
 *Need a little help with studying? Always get distracted way too easily? StudyMate's got you covered.* 
 
-Proudly powered ⚡ by <img align="center" width="20" src="https://raw.githubusercontent.com/wxt-dev/wxt/HEAD/docs/public/hero-logo.svg" alt="WXT Logo"> WXT and <img align="center" width= "20" src="https://github.com/sveltejs/svelte.dev/blob/main/apps/svelte.dev/static/images/svelte-android-chrome-192.png?raw=true" alt="Svelte Logo"> Svelte.
+Proudly powered ⚡ by <img align="center" width="20" src="https://raw.githubusercontent.com/wxt-dev/wxt/HEAD/docs/public/hero-logo.svg" alt="WXT Logo"> `[WXT](https://wxt.dev) and <img align="center" width= "20" src="https://github.com/sveltejs/svelte.dev/blob/main/apps/svelte.dev/static/images/svelte-android-chrome-192.png?raw=true" alt="Svelte Logo"> [Svelte](https://svelte.dev).
 
-Made with ❤️ for <img src="https://github.com/user-attachments/assets/a7da63c4-eb4b-4fe6-b048-e441d1cb86d9" width="20"> High Seas, a collaboration between GitHub and Hack Club for teenagers to build projects and get free stuff.
+Made with ❤️ for <img src="https://github.com/user-attachments/assets/a7da63c4-eb4b-4fe6-b048-e441d1cb86d9" width="20"> [High Seas](https://highseas.hackclub.com), a collaboration between GitHub and Hack Club for teenagers to build projects and get free stuff.
 
 ## Features
 Currently, the app is in development. Right now, there's a cute little pixel art pomodoro timer with the features to switch from timer and track the amount of finished timers.

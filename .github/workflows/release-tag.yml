@@ -1,0 +1,42 @@
+name: Tag with release when new PR is opened, synchronized, or reopened
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  tag-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "v${{ steps.get_version.outputs.VERSION }}" >/dev/null 2>&1; then
+            echo "Tag exists"
+            echo "TAG_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "Tag does not exist"
+            echo "TAG_EXISTS=false" >> $GITHUB_ENV
+
+      - name: Create tag
+        if: github.event.pull_request.merged == true && steps.check_tag.outputs.TAG_EXISTS == 'false'
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag "v${{ steps.get_version.outputs.VERSION }}"
+          git push origin "v${{ steps.get_version.outputs.VERSION }}"
