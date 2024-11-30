@@ -31,15 +31,15 @@
     <form>
         <label>
             <input type="radio" id="pomodoro" name="timerType" checked on:click={handleClick} disabled={buttonState === "PAUSE"}>
-            <span>Pomodoro {#if completedSessions.completedPomodoros > 0}<strong>({completedSessions.completedPomodoros})</strong>{/if}</span>
+            <span>Pomodoro {#if completedSessions.completedPomodoros > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedPomodoros})</strong>{/if}</span>
         </label>
         <label>
             <input type="radio" id="shortBreak" name="timerType" on:click={handleClick} disabled={buttonState === "PAUSE"}>
-            <span>Short Break {#if completedSessions.completedShortBreaks > 0}<strong>({completedSessions.completedShortBreaks})</strong>{/if}</span>
+            <span>Short Break {#if completedSessions.completedShortBreaks > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedShortBreaks})</strong>{/if}</span>
         </label>
         <label>
             <input type="radio" id="longBreak" name="timerType" on:click={handleClick} disabled={buttonState === "PAUSE"}>
-            <span>Long Break {#if completedSessions.completedLongBreaks > 0}<strong>({completedSessions.completedLongBreaks})</strong>{/if}</span>
+            <span>Long Break {#if completedSessions.completedLongBreaks > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedLongBreaks})</strong>{/if}</span>
         </label>
     </form>
 </div>
