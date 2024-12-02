@@ -4,9 +4,14 @@ input[type="radio"] {
 
 form {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     flex-wrap: nowrap;
-    gap: 10px;
-    overflow-x: auto;
+    overflow: hidden;
+    background-color: #242424;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 label {
@@ -17,12 +22,25 @@ label {
     white-space: nowrap;
     overflow: hidden; 
     text-overflow: ellipsis;
+    border-radius: 10px;
+    margin: 0; 
+}
+
+form > label:not(:first-child) {
+    margin-left: 5px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 input[type="radio"]:checked + span {
-    color: #747bff;
+    background-color: #747bff;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 0;
 }
 
 label span {
-    margin-left: 8px;
+    margin-left: 0;
 }
