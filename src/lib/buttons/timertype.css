@@ -2,10 +2,11 @@
     position: relative;
     margin: 24px;
     padding: 2px;
-    border: 1px solid #aaa;
+    border: 1px solid #ffffff;
     border-radius: 12px;
     background: none;
     overflow: hidden;
+    width: 400px;
   
     &::after,
     &::before {
@@ -21,10 +22,7 @@
     }
     &::before {
       z-index: -3;
-      left: 2px;
-      top: 2px;
       width: 33.33%;
-      height: calc(100% - 4px);
       border-radius: 12px;
       background: #747bff;
       transition-property: left;
