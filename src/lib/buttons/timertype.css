@@ -6,7 +6,7 @@
     border-radius: 12px;
     background: none;
     overflow: hidden;
-    width: 400px;
+    width: 300px;
   
     &::after,
     &::before {
