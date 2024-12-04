@@ -1,4 +1,3 @@
-import { POMODORO as pomodoro, SHORT_BREAK as shortBreak, LONG_BREAK as longBreak } from "@/utils/constants";
 import { countdown } from "@/utils/countdown";
 import toDoubleDigit from "@/utils/toDoubleDigit";
 
@@ -17,8 +16,8 @@ export default defineBackground(() => {
   console.log("info> started StudyMate", { id: browser.runtime.id });
 
   const getMinutesSeconds = (time: number) => {
-    const minutes = toDoubleDigit(Math.floor(time / 60));
-    const seconds = toDoubleDigit(time % 60);
+    const minutes = toDoubleDigit(Math.floor(time / 60000) % 60);
+    const seconds = toDoubleDigit(Math.floor(time / 1000) % 60);
     return { minutes, seconds };
   };
 
@@ -48,18 +47,21 @@ export default defineBackground(() => {
   };
 
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === "START_TIMER") {
+    if (message.type === "GET_STATE") {
+      sendResponse({ buttonState, timerType, completedSessions });
+    } else if (message.type === "START_TIMER") {
       playTimer(message.time);
-      sendResponse({ status: "timerStarted", time: updateTimer(timeBetween) });
+      sendResponse({ status: "timerStarted", time: updateTimer(message.time) });
     } else if (message.type === "PAUSE_TIMER") {
       pauseTimer();
-      sendResponse({ status: "timerPaused", time: updateTimer(timeBetween) });
+      console.log(`debug> background.ts sent response w/ ${updateTimer(message.time)}`);
+      sendResponse({ status: "timerPaused", time: updateTimer(message.time) });
     } else if (message.type === "UPDATE_BUTTON_STATE") {
-      buttonState = message.buttonState;
+      buttonState = message.buttonState ? "PAUSE" : "START";
       sendResponse({ status: "buttonStateUpdated", buttonState });
     }
 
-    console.log(`debug> received message: ${message.type} with additional data: ${JSON.stringify(message)}`);
+    console.log(`debug> received message inside background.ts: ${message.type} with additional data: ${JSON.stringify(message)}`);
     return true;
   });
 });
