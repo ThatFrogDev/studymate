@@ -27,7 +27,7 @@
   onMount(async () => {
   const state = await browser.runtime.sendMessage({ type: "GET_STATE" });
   if (state) {
-      buttonState = state.buttonState;
+      /*buttonState = state.buttonState*/;
       timerType = state.timerType;
       completedSessions = state.completedSessions;
     }
@@ -80,6 +80,10 @@
 
   $: ({ minutes, seconds } = getMinutesSeconds(timeBetween));
 
+  const changeButtonState = () => {
+    buttonState = buttonState === "START" ? "PAUSE" : "START";
+  };
+
   $: {
     if (shouldUpdateTimer && timer) {
       timer.innerHTML = `${minutes}:${seconds}`;
@@ -107,10 +111,7 @@
       }
     }
 
-    const state = await browser.runtime.sendMessage({ type: "GET_STATE" });
-    if (state) {
-      buttonState = state.buttonState;
-    }
+    changeButtonState();
   };
 </script>
 

@@ -2,7 +2,6 @@ import { countdown } from "@/utils/countdown";
 import toDoubleDigit from "@/utils/toDoubleDigit";
 
 export let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = "POMODORO";
-export let buttonState: "START" | "PAUSE" = "START";
 export let completedSessions = {
   completedPomodoros: 0,
   completedShortBreaks: 0,
@@ -48,7 +47,7 @@ export default defineBackground(() => {
 
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "GET_STATE") {
-      sendResponse({ buttonState, timerType, completedSessions });
+      sendResponse({ timerType, completedSessions });
     } else if (message.type === "START_TIMER") {
       playTimer(message.time);
       sendResponse({ status: "timerStarted", time: updateTimer(message.time) });
@@ -56,10 +55,7 @@ export default defineBackground(() => {
       pauseTimer();
       console.log(`debug> background.ts sent response w/ ${updateTimer(message.time)}`);
       sendResponse({ status: "timerPaused", time: updateTimer(message.time) });
-    } else if (message.type === "UPDATE_BUTTON_STATE") {
-      buttonState = message.buttonState ? "PAUSE" : "START";
-      sendResponse({ status: "buttonStateUpdated", buttonState });
-    }
+    } 
 
     console.log(`debug> received message inside background.ts: ${message.type} with additional data: ${JSON.stringify(message)}`);
     return true;
