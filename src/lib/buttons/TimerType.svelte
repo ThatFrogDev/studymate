@@ -23,6 +23,9 @@
             timerType = "LONG_BREAK";
         }
 
+        browser.runtime.sendMessage({ type: "INIT_TIMER", timerType });
+
+        console.log(`debug> completedSessions: ${JSON.stringify(completedSessions)}`);
         console.log(`debug> timer changed to: ${timerType}`);
     }
 </script>

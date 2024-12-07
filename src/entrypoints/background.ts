@@ -5,7 +5,7 @@ export let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = "POMODORO";
 export let completedSessions = {
   completedPomodoros: 0,
   completedShortBreaks: 0,
-  completedLongBreaks: 0
+  completedLongBreaks: 0,
 };
 
 let interval: NodeJS.Timeout | null = null;
@@ -26,19 +26,27 @@ export default defineBackground(() => {
   };
 
   const playTimer = (time: number) => {
-    interval = countdown(time, (remainingTime) => {
-      timeBetween = remainingTime;
-      browser.runtime.sendMessage({ type: "UPDATE_TIMER", time: updateTimer(timeBetween) });
-    }, () => {
-      if (timerType === "POMODORO") {
-        completedSessions.completedPomodoros += 1;
-      } else if (timerType === "SHORT_BREAK") {
-        completedSessions.completedShortBreaks += 1;
-      } else if (timerType === "LONG_BREAK") {
-        completedSessions.completedLongBreaks += 1;
+    interval = countdown(
+      time,
+      (remainingTime) => {
+        timeBetween = remainingTime;
+        browser.runtime.sendMessage({
+          type: "UPDATE_TIMER",
+          time: updateTimer(timeBetween),
+        });
+      },
+      () => {
+        if (timerType === "POMODORO") {
+          completedSessions.completedPomodoros += 1;
+        } else if (timerType === "SHORT_BREAK") {
+          completedSessions.completedShortBreaks += 1;
+        } else if (timerType === "LONG_BREAK") {
+          completedSessions.completedLongBreaks += 1;
+        }
+
+        browser.runtime.sendMessage({ type: "RESET_TIMER" });
       }
-      browser.runtime.sendMessage({ type: "PLAY_TIMER" });
-    });
+    );
   };
 
   const pauseTimer = () => {
@@ -53,11 +61,19 @@ export default defineBackground(() => {
       sendResponse({ status: "timerStarted", time: updateTimer(message.time) });
     } else if (message.type === "PAUSE_TIMER") {
       pauseTimer();
-      console.log(`debug> background.ts sent response w/ ${updateTimer(message.time)}`);
+      console.log(
+        `debug> background.ts sent response w/ ${updateTimer(message.time)}`
+      );
       sendResponse({ status: "timerPaused", time: updateTimer(message.time) });
-    } 
+    } else if (message.type === "INIT_TIMER") {
+      browser.runtime.sendMessage({ type: "INIT_TIMER", timerType: message.timerType });
+    }
 
-    console.log(`debug> received message inside background.ts: ${message.type} with additional data: ${JSON.stringify(message)}`);
+    console.log(
+      `debug> received message inside background.ts: ${
+        message.type
+      } with additional data: ${JSON.stringify(message)}`
+    );
     return true;
   });
 });

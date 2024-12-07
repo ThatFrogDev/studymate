@@ -25,16 +25,15 @@
   let shouldUpdateTimer = true;
 
   onMount(async () => {
-  const state = await browser.runtime.sendMessage({ type: "GET_STATE" });
-  if (state) {
-      /*buttonState = state.buttonState*/;
+    const state = await browser.runtime.sendMessage({ type: "GET_STATE" });
+    if (state) {
       timerType = state.timerType;
       completedSessions = state.completedSessions;
     }
+    initializeTimer(timerType);
   });
 
-
-  const initializeTimer = () => {
+  const initializeTimer = (timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK") => {
     switch (timerType) {
       case "POMODORO":
         timeBetween = Number(pomodoro);
@@ -46,16 +45,49 @@
         timeBetween = Number(longBreak);
         break;
     }
+
+    if (timer) {
+      const { minutes, seconds } = getMinutesSeconds(timeBetween);
+      timer.innerHTML = `${minutes}:${seconds}`;
+    }
+
+    console.log(`debug> initializeTimer called with timerType: ${timerType}, timeBetween: ${timeBetween}`);
   };
 
-  initializeTimer();
+  const resetTimer = () => {
+    switch (timerType) {
+      case "POMODORO":
+        timeBetween = Number(pomodoro);
+        buttonState = "START";
+        break;
+      case "SHORT_BREAK":
+        timeBetween = Number(shortBreak);
+        buttonState = "START";
+        break;
+      case "LONG_BREAK":
+        timeBetween = Number(longBreak);
+        buttonState = "START";
+        break;
+    }
+    if (timer) {
+      const { minutes, seconds } = getMinutesSeconds(timeBetween);
+      timer.innerHTML = `${minutes}:${seconds}`;
+    }
+  };
+
+  initializeTimer(timerType);
 
   console.log(`debug> timeBetween: ${timeBetween}`);
 
   $: {
     browser.runtime.onMessage.addListener((message, sender, onResponse) => {
-      if (message.type === "PLAY_TIMER") {
+      console.log(`debug> received message inside Start.svelte: ${message.type}`);
+      if (message.type === "RESET_TIMER") {
         timeUpSound.play();
+        completedSessions = message.completedSessions;
+        resetTimer();
+      } else if (message.type === "INIT_TIMER") {
+        initializeTimer(message.timerType);
       } else if (message.type === "UPDATE_TIMER") {
         if (timer) {
           timer.innerText = message.time;
