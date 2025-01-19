@@ -12,18 +12,18 @@ _Coming soon 👀_: User settings, an option to block websites, a logo (of cours
 **Note:** My friend Froxcey will do the art, and since he got a lot of papers to finish, the art-related things won't be in it before Christmas. _What nice of a Christmas present! 🎄✨_
 
 ## Demo video
-<video width="600" controls src="https://github.com/user-attachments/assets/ec602e22-f3ec-4e99-9080-dabb993cc5f2" type="video/mp4">
+<video width="600" controls src="./static/studymate-v0.1.4-demo.mp4" type="video/mp4">
     Your browser does not support the video tag.
 </video>
 
 ## A few screenshots
-![StudyMate Dark Mode](./static/studymate-v0.1-dark-mode.png)
-![StudyMate Light Mode](./static/studymate-v0.1-light-mode.png)
+![StudyMate Dark Mode](./static/studymate-v0.1.4-dark-mode.png)
+![StudyMate Light Mode](./static/studymate-v0.1.4-light-mode.png)
 
 ## How do *I* use this?
-If you're a developer, you can zip the extension with `pnpm zip`. <!-- If you have no idea what that means, please continue. -->
+If you're a developer, you can zip the extension with `pnpm zip`. If you have no idea what that means, please continue.
 
-<!-- ### Installing through a ZIP file
+### Installing through a ZIP file
 1. At the "releases" tab, there's a ZIP file for every new StudyMate release. Choose Firefox or Chrome dependent on which browser you use.
 2. _(Chrome only)_ Unzip the file.
 3.  - _(Chrome)_ Click on the three dots ansd click on Extensions. Next, click on Manage extensions.
@@ -36,7 +36,7 @@ If you're a developer, you can zip the extension with `pnpm zip`. <!-- If you ha
 **Enjoy!** Please note that on Firefox, the extension is only temporary since it isn't signed yet. When you really want to start using it, you have to download it from their store.
 
 ### Installing from the store
-This isn't yet possible, sorry. -->
+This isn't yet possible, sorry.
 
 ## Acknowledgements
 - Sound: FreeSound.org
