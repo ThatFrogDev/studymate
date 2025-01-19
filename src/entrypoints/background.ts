@@ -61,19 +61,11 @@ export default defineBackground(() => {
       sendResponse({ status: "timerStarted", time: updateTimer(message.time) });
     } else if (message.type === "PAUSE_TIMER") {
       pauseTimer();
-      console.log(
-        `debug> background.ts sent response w/ ${updateTimer(message.time)}`
-      );
       sendResponse({ status: "timerPaused", time: updateTimer(message.time) });
     } else if (message.type === "INIT_TIMER") {
       browser.runtime.sendMessage({ type: "INIT_TIMER", timerType: message.timerType });
     }
 
-    console.log(
-      `debug> received message inside background.ts: ${
-        message.type
-      } with additional data: ${JSON.stringify(message)}`
-    );
     return true;
   });
 });
