@@ -1,26 +1,39 @@
 <script lang="ts">
-  import { POMODORO as pomodoro, SHORT_BREAK as shortBreak, LONG_BREAK as longBreak } from "@/utils/constants";
-  import { countdown } from "@/utils/countdown";
-  import toDoubleDigit from "@/utils/toDoubleDigit";
-  import timeUp from "~/assets/sound/time-up.wav";
+  import {
+    POMODORO as pomodoro,
+    SHORT_BREAK as shortBreak,
+    LONG_BREAK as longBreak,
+  } from "@/utils/constants";
   import pauseIcon from "~/assets/icon/pause.png";
   import playIcon from "~/assets/icon/play.png";
-
-  export let timer: HTMLElement | null = document.getElementById("timer");
-  export let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = "POMODORO";
-  export let buttonState: "START" | "PAUSE" = "START";
-  export let completedSessions = {
-    completedPomodoros: 0,
-    completedShortBreaks: 0,
-    completedLongBreaks: 0
-  };
+  import timeUp from "~/assets/sound/time-up.wav";
+  import toDoubleDigit from "@/utils/toDoubleDigit";
+  import { onMount } from "svelte";
 
   const timeUpSound = new Audio(timeUp);
 
-  let interval: NodeJS.Timeout | null = null;
-  let timeBetween: number;
+  export let buttonState: "START" | "PAUSE" = "START";
+  export let timer: HTMLElement | null = document.getElementById("timer");
+  export let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = "POMODORO";
+  export let completedSessions = {
+    completedPomodoros: 0,
+    completedShortBreaks: 0,
+    completedLongBreaks: 0,
+  };
 
-  $: {
+  let timeBetween: number = 0;
+  let shouldUpdateTimer = true;
+
+  onMount(async () => {
+    const state = await browser.runtime.sendMessage({ type: "GET_STATE" });
+    if (state) {
+      timerType = state.timerType;
+      completedSessions = state.completedSessions;
+    }
+    initializeTimer(timerType);
+  });
+
+  const initializeTimer = (timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK") => {
     switch (timerType) {
       case "POMODORO":
         timeBetween = Number(pomodoro);
@@ -32,23 +45,13 @@
         timeBetween = Number(longBreak);
         break;
     }
-  }
 
-  const getMinutesSeconds = (time: number) => ({
-    minutes: toDoubleDigit(Math.floor((time / 60000) % 60)),
-    seconds: toDoubleDigit(Math.floor((time / 1000) % 60))
-  });
-
-  $: ({ minutes, seconds } = getMinutesSeconds(timeBetween));
-
-  $: {
     if (timer) {
+      const { minutes, seconds } = getMinutesSeconds(timeBetween);
       timer.innerHTML = `${minutes}:${seconds}`;
     }
-  }
 
-  const changeButtonState = () => {
-    buttonState = buttonState === "START" ? "PAUSE" : "START";
+    console.log(`debug> initializeTimer called with timerType: ${timerType}, timeBetween: ${timeBetween}`);
   };
 
   const resetTimer = () => {
@@ -72,37 +75,78 @@
     }
   };
 
-  const playTimer = () => {
-    if (timer) {
-      interval = countdown(timer, timeBetween, (remainingTime) => {
-        timeBetween = remainingTime;
-      }, () => {
-        if (timerType === "POMODORO") {
-          completedSessions.completedPomodoros += 1;
-          timeUpSound.play();
-        } else if (timerType === "SHORT_BREAK") {
-          completedSessions.completedShortBreaks += 1;
-          timeUpSound.play();
-        } else if (timerType === "LONG_BREAK") {
-          completedSessions.completedLongBreaks += 1;
-          timeUpSound.play();
-        }
+  initializeTimer(timerType);
 
+  console.log(`debug> timeBetween: ${timeBetween}`);
+
+  $: {
+    browser.runtime.onMessage.addListener((message, sender, onResponse) => {
+      console.log(`debug> received message inside Start.svelte: ${message.type}`);
+      if (message.type === "RESET_TIMER") {
+        // TODO: Move this process to the background; e.g. in a offscreen document.
+        timeUpSound.play();
+        completedSessions = message.completedSessions;
         resetTimer();
-      });
+        // This is a really goofy hack-around to force the window to re-render and update itself, e.g. the button state and timer count...
+        // TODO: Find a better way to do this.
+        window.close();
+      } else if (message.type === "INIT_TIMER") {
+        initializeTimer(message.timerType);
+      } else if (message.type === "UPDATE_TIMER") {
+        if (timer) {
+          timer.innerText = message.time;
+          timeBetween = message.time
+            .split(":")
+            .reduce((acc: number, time: number, index: number) => {
+              if (index === 0) {
+                return acc + Number(time) * 60000;
+              } else {
+                return acc + Number(time) * 1000;
+              }
+            }, 0);
+        }
+      }
+    });
+  }
+
+  const getMinutesSeconds = (time: number) => ({
+    minutes: toDoubleDigit(Math.floor((time / 60000) % 60)),
+    seconds: toDoubleDigit(Math.floor((time / 1000) % 60)),
+  });
+
+  $: ({ minutes, seconds } = getMinutesSeconds(timeBetween));
+
+  const changeButtonState = () => {
+    buttonState = buttonState === "START" ? "PAUSE" : "START";
+  };
+
+  $: {
+    if (shouldUpdateTimer && timer) {
+      timer.innerHTML = `${minutes}:${seconds}`;
+      shouldUpdateTimer = false;
     }
-  };
+  }
 
-  const pauseTimer = () => {
-    if (interval !== null) clearInterval(interval);
-  };
-
-  const handleClick = () => {
+  const handleClick = async () => {
     if (buttonState === "START") {
-      playTimer();
+      await browser.runtime.sendMessage({
+        type: "START_TIMER",
+        time: timeBetween,
+      });
     } else {
-      pauseTimer();
+      const response = await browser.runtime.sendMessage({
+        type: "PAUSE_TIMER",
+        time: timeBetween,
+      });
+      if (timer && response) {
+        const time = Number(response.time);
+        if (!isNaN(time)) {
+          const { minutes, seconds } = getMinutesSeconds(time);
+          timer.innerText = `${minutes}:${seconds}`;
+        }
+      }
     }
+
     changeButtonState();
   };
 </script>

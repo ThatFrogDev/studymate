@@ -14,7 +14,7 @@ let completedSessions = {
 
 <main>
   <div class="logo">
-    <p>StudyMate</p>
+    <h2>StudyMate</h2>
   </div>
 
   <div class="timer-type">

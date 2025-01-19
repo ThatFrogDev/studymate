@@ -23,23 +23,27 @@
             timerType = "LONG_BREAK";
         }
 
+        browser.runtime.sendMessage({ type: "INIT_TIMER", timerType });
+
+        console.log(`debug> completedSessions: ${JSON.stringify(completedSessions)}`);
         console.log(`debug> timer changed to: ${timerType}`);
     }
 </script>
 
-<div class="timer-type">
+<div class="timer-type" data-is="multiswitch">
     <form>
         <label>
-            <input type="radio" id="pomodoro" name="timerType" checked on:click={handleClick} disabled={buttonState === "PAUSE"}>
-            <span>Pomodoro {#if completedSessions.completedPomodoros > 0}<strong>({completedSessions.completedPomodoros})</strong>{/if}</span>
+            <input type="radio" id="pomodoro" data-id="1" name="timerType" checked on:click={handleClick} disabled={buttonState === "PAUSE"}>
+            <span>Pomodoro {#if completedSessions.completedPomodoros > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedPomodoros})</strong>{/if}</span>
         </label>
         <label>
-            <input type="radio" id="shortBreak" name="timerType" on:click={handleClick} disabled={buttonState === "PAUSE"}>
-            <span>Short Break {#if completedSessions.completedShortBreaks > 0}<strong>({completedSessions.completedShortBreaks})</strong>{/if}</span>
+            <input type="radio" id="shortBreak" data-id="2" name="timerType" on:click={handleClick} disabled={buttonState === "PAUSE"}>
+            <span>Short Break {#if completedSessions.completedShortBreaks > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedShortBreaks})</strong>{/if}</span>
         </label>
         <label>
-            <input type="radio" id="longBreak" name="timerType" on:click={handleClick} disabled={buttonState === "PAUSE"}>
-            <span>Long Break {#if completedSessions.completedLongBreaks > 0}<strong>({completedSessions.completedLongBreaks})</strong>{/if}</span>
+            <input type="radio" id="longBreak" name="timerType" data-id="3" on:click={handleClick} disabled={buttonState === "PAUSE"}>
+            <span>Long Break {#if completedSessions.completedLongBreaks > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedLongBreaks})</strong>{/if}</span>
         </label>
+        <div id="indicator"></div>
     </form>
 </div>

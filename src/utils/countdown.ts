@@ -8,23 +8,17 @@
 
 import toDoubleDigit from "./toDoubleDigit";
 
-export function countdown(timer: HTMLElement, time: number, onUpdate?: (timeBetween: number) => void, onFinish?: () => void): NodeJS.Timeout {
+export function countdown(time: number, onUpdate?: (timeBetween: number) => void, onFinish?: () => void): NodeJS.Timeout {
     let now = Date.now();
     let completed = now + time;
 
     const countdown = setInterval(function() {
       now = Date.now();
       let timeBetween = completed - now;
-      let minutes = toDoubleDigit(Math.floor((timeBetween / 60000) % 60));
-      let seconds = toDoubleDigit(Math.floor((timeBetween / 1000) % 60));
-
-      timer.innerText = `${minutes}:${seconds}`;
-      
       if (onUpdate) onUpdate(timeBetween);
 
       if (timeBetween <= 0) {
         clearInterval(countdown);
-        timer.innerText = "00:00";
         if (onFinish) onFinish();
       }
     }, 500);
