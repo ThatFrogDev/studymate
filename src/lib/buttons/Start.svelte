@@ -83,9 +83,13 @@
     browser.runtime.onMessage.addListener((message, sender, onResponse) => {
       console.log(`debug> received message inside Start.svelte: ${message.type}`);
       if (message.type === "RESET_TIMER") {
+        // TODO: Move this process to the background; e.g. in a offscreen document.
         timeUpSound.play();
         completedSessions = message.completedSessions;
         resetTimer();
+        // This is a really goofy hack-around to force the window to re-render and update itself, e.g. the button state and timer count...
+        // TODO: Find a better way to do this.
+        window.close();
       } else if (message.type === "INIT_TIMER") {
         initializeTimer(message.timerType);
       } else if (message.type === "UPDATE_TIMER") {
