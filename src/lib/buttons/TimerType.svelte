@@ -2,13 +2,17 @@
     import './timertype.css';
     import './Start.svelte';
 
-    export let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = "POMODORO";
-    export let buttonState: "START" | "PAUSE" = "START";
-    export let completedSessions = {
+    interface Props {
+        timerType?: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK";
+        buttonState?: "START" | "PAUSE";
+        completedSessions?: any;
+    }
+
+    let { timerType = $bindable("POMODORO"), buttonState = "START", completedSessions = {
       completedPomodoros: 0,
       completedShortBreaks: 0,
       completedLongBreaks: 0
-    };
+    } }: Props = $props();
 
     const handleClick = () => {
         const pomodoro = document.getElementById('pomodoro') as HTMLInputElement;
@@ -33,15 +37,15 @@
 <div class="timer-type" data-is="multiswitch">
     <form>
         <label>
-            <input type="radio" id="pomodoro" data-id="1" name="timerType" checked on:click={handleClick} disabled={buttonState === "PAUSE"}>
+            <input type="radio" id="pomodoro" data-id="1" name="timerType" checked onclick={handleClick} disabled={buttonState === "PAUSE"}>
             <span>Pomodoro {#if completedSessions.completedPomodoros > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedPomodoros})</strong>{/if}</span>
         </label>
         <label>
-            <input type="radio" id="shortBreak" data-id="2" name="timerType" on:click={handleClick} disabled={buttonState === "PAUSE"}>
+            <input type="radio" id="shortBreak" data-id="2" name="timerType" onclick={handleClick} disabled={buttonState === "PAUSE"}>
             <span>Short Break {#if completedSessions.completedShortBreaks > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedShortBreaks})</strong>{/if}</span>
         </label>
         <label>
-            <input type="radio" id="longBreak" name="timerType" data-id="3" on:click={handleClick} disabled={buttonState === "PAUSE"}>
+            <input type="radio" id="longBreak" name="timerType" data-id="3" onclick={handleClick} disabled={buttonState === "PAUSE"}>
             <span>Long Break {#if completedSessions.completedLongBreaks > 0}<strong style="font-family: 'Manrope'; line-height: 1;">({completedSessions.completedLongBreaks})</strong>{/if}</span>
         </label>
         <div id="indicator"></div>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import {
     POMODORO as pomodoro,
     SHORT_BREAK as shortBreak,
@@ -12,17 +14,26 @@
 
   const timeUpSound = new Audio(timeUp);
 
-  export let buttonState: "START" | "PAUSE" = "START";
-  export let timer: HTMLElement | null = document.getElementById("timer");
-  export let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = "POMODORO";
-  export let completedSessions = {
+  interface Props {
+    buttonState?: "START" | "PAUSE";
+    timer?: HTMLElement | null;
+    timerType?: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK";
+    completedSessions?: any;
+  }
+
+  let {
+    buttonState = $bindable("START"),
+    timer = $bindable(document.getElementById("timer")),
+    timerType = $bindable("POMODORO"),
+    completedSessions = $bindable({
     completedPomodoros: 0,
     completedShortBreaks: 0,
     completedLongBreaks: 0,
-  };
+  })
+  }: Props = $props();
 
-  let timeBetween: number = 0;
-  let shouldUpdateTimer = true;
+  let timeBetween: number = $state(0);
+  let shouldUpdateTimer = $state(true);
 
   onMount(async () => {
     const state = await browser.runtime.sendMessage({ type: "GET_STATE" });
@@ -79,7 +90,7 @@
 
   console.log(`debug> timeBetween: ${timeBetween}`);
 
-  $: {
+  run(() => {
     browser.runtime.onMessage.addListener((message, sender, onResponse) => {
       console.log(`debug> received message inside Start.svelte: ${message.type}`);
       if (message.type === "RESET_TIMER") {
@@ -107,25 +118,25 @@
         }
       }
     });
-  }
+  });
 
   const getMinutesSeconds = (time: number) => ({
     minutes: toDoubleDigit(Math.floor((time / 60000) % 60)),
     seconds: toDoubleDigit(Math.floor((time / 1000) % 60)),
   });
 
-  $: ({ minutes, seconds } = getMinutesSeconds(timeBetween));
+  let { minutes, seconds } = $derived(getMinutesSeconds(timeBetween));
 
   const changeButtonState = () => {
     buttonState = buttonState === "START" ? "PAUSE" : "START";
   };
 
-  $: {
+  run(() => {
     if (shouldUpdateTimer && timer) {
       timer.innerHTML = `${minutes}:${seconds}`;
       shouldUpdateTimer = false;
     }
-  }
+  });
 
   const handleClick = async () => {
     if (buttonState === "START") {
@@ -151,7 +162,7 @@
   };
 </script>
 
-<button id="timerButton" on:click={handleClick}>
+<button id="timerButton" onclick={handleClick}>
   {#if buttonState === "START"}
     <img src={playIcon} width="12" alt="Play" />
   {:else}

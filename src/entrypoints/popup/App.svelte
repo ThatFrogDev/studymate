@@ -2,14 +2,14 @@
 import Start from "@/lib/buttons/Start.svelte";
 import TimerType from "@/lib/buttons/TimerType.svelte";
 
-let timer;
-let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = "POMODORO";
-let buttonState: "START" | "PAUSE" = "START";
-let completedSessions = {
+let timer = $state();
+let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = $state("POMODORO");
+let buttonState: "START" | "PAUSE" = $state("START");
+let completedSessions = $state({
   completedPomodoros: 0,
   completedShortBreaks: 0,
   completedLongBreaks: 0
-};
+});
 </script>
 
 <main>
