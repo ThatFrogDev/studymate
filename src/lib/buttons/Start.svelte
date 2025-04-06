@@ -61,8 +61,6 @@
       const { minutes, seconds } = getMinutesSeconds(timeBetween);
       timer.innerHTML = `${minutes}:${seconds}`;
     }
-
-    console.log(`debug> initializeTimer called with timerType: ${timerType}, timeBetween: ${timeBetween}`);
   };
 
   const resetTimer = () => {
@@ -88,19 +86,13 @@
 
   initializeTimer(timerType);
 
-  console.log(`debug> timeBetween: ${timeBetween}`);
-
-  run(() => {
+  $effect(() => {
     browser.runtime.onMessage.addListener((message, sender, onResponse) => {
-      console.log(`debug> received message inside Start.svelte: ${message.type}`);
       if (message.type === "RESET_TIMER") {
         // TODO: Move this process to the background; e.g. in a offscreen document.
         timeUpSound.play();
         completedSessions = message.completedSessions;
         resetTimer();
-        // This is a really goofy hack-around to force the window to re-render and update itself, e.g. the button state and timer count...
-        // TODO: Find a better way to do this.
-        window.close();
       } else if (message.type === "INIT_TIMER") {
         initializeTimer(message.timerType);
       } else if (message.type === "UPDATE_TIMER") {
@@ -131,7 +123,7 @@
     buttonState = buttonState === "START" ? "PAUSE" : "START";
   };
 
-  run(() => {
+  $effect(() => {
     if (shouldUpdateTimer && timer) {
       timer.innerHTML = `${minutes}:${seconds}`;
       shouldUpdateTimer = false;

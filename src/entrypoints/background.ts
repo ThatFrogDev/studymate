@@ -35,7 +35,7 @@ export default defineBackground(() => {
           time: updateTimer(timeBetween),
         });
       },
-      () => {
+      () => {        
         if (timerType === "POMODORO") {
           completedSessions.completedPomodoros += 1;
         } else if (timerType === "SHORT_BREAK") {
@@ -44,7 +44,10 @@ export default defineBackground(() => {
           completedSessions.completedLongBreaks += 1;
         }
 
-        browser.runtime.sendMessage({ type: "RESET_TIMER" });
+        browser.runtime.sendMessage({ 
+          type: "RESET_TIMER", 
+          completedSessions: completedSessions 
+        });
       }
     );
   };
@@ -63,6 +66,7 @@ export default defineBackground(() => {
       pauseTimer();
       sendResponse({ status: "timerPaused", time: updateTimer(message.time) });
     } else if (message.type === "INIT_TIMER") {
+      timerType = message.timerType;
       browser.runtime.sendMessage({ type: "INIT_TIMER", timerType: message.timerType });
     }
 

@@ -2,7 +2,7 @@
 import Start from "@/lib/buttons/Start.svelte";
 import TimerType from "@/lib/buttons/TimerType.svelte";
 
-let timer = $state();
+let timer: HTMLElement | null | undefined = $state();
 let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = $state("POMODORO");
 let buttonState: "START" | "PAUSE" = $state("START");
 let completedSessions = $state({
