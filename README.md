@@ -1,7 +1,7 @@
 # StudyMate
 *Need a little help with studying? Always get distracted way too easily? StudyMate's got you covered.* 
 
-Proudly powered ⚡ by <img align="center" width="20" src="https://raw.githubusercontent.com/wxt-dev/wxt/HEAD/docs/public/hero-logo.svg" alt="WXT Logo"> `[WXT](https://wxt.dev) and <img align="center" width= "20" src="https://github.com/sveltejs/svelte.dev/blob/main/apps/svelte.dev/static/images/svelte-android-chrome-192.png?raw=true" alt="Svelte Logo"> [Svelte](https://svelte.dev).
+Proudly powered ⚡ by <img align="center" width="20" src="https://raw.githubusercontent.com/wxt-dev/wxt/HEAD/docs/public/hero-logo.svg" alt="WXT Logo"> [WXT](https://wxt.dev) and <img align="center" width= "20" src="https://github.com/sveltejs/svelte.dev/blob/main/apps/svelte.dev/static/images/svelte-android-chrome-192.png?raw=true" alt="Svelte Logo"> [Svelte](https://svelte.dev).
 
 Made with ❤️ for <img src="https://github.com/user-attachments/assets/a7da63c4-eb4b-4fe6-b048-e441d1cb86d9" width="20"> [High Seas](https://highseas.hackclub.com), a collaboration between GitHub and Hack Club for teenagers to build projects and get free stuff.
 
@@ -9,7 +9,6 @@ Made with ❤️ for <img src="https://github.com/user-attachments/assets/a7da63
 Currently, the app is in development. Right now, there's a cute little pixel art pomodoro timer with the features to switch from timer and track the amount of finished timers.
 
 _Coming soon 👀_: User settings, an option to block websites, a logo (of course!) a parrot which randomly blurts out motivational quotes(?) -- enough reason to stay tuned!
-**Note:** My friend Froxcey will do the art, and since he got a lot of papers to finish, the art-related things won't be in it before Christmas. _What nice of a Christmas present! 🎄✨_
 
 ## Demo video
 <video width="600" controls src="./static/studymate-v0.1.4-demo.mp4" type="video/mp4">
