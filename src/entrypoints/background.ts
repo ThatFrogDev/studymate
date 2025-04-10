@@ -1,3 +1,4 @@
+import { updateTime } from "@/lib/state.svelte";
 import { countdown } from "@/utils/countdown";
 import toDoubleDigit from "@/utils/toDoubleDigit";
 
@@ -22,7 +23,9 @@ export default defineBackground(() => {
 
   const updateTimer = (time: number) => {
     let { minutes, seconds } = getMinutesSeconds(time);
-    return `${minutes}:${seconds}`;
+    updateTime(minutes, seconds);
+    timeBetween = time;
+    return time;
   };
 
   const playTimer = (time: number) => {
@@ -30,9 +33,10 @@ export default defineBackground(() => {
       time,
       (remainingTime) => {
         timeBetween = remainingTime;
+        // Send the remaining time value directly
         browser.runtime.sendMessage({
           type: "UPDATE_TIMER",
-          time: updateTimer(timeBetween),
+          timeValue: remainingTime
         });
       },
       () => {        
@@ -61,10 +65,10 @@ export default defineBackground(() => {
       sendResponse({ timerType, completedSessions });
     } else if (message.type === "START_TIMER") {
       playTimer(message.time);
-      sendResponse({ status: "timerStarted", time: updateTimer(message.time) });
+      sendResponse({ status: "timerStarted", time: message.time });
     } else if (message.type === "PAUSE_TIMER") {
       pauseTimer();
-      sendResponse({ status: "timerPaused", time: updateTimer(message.time) });
+      sendResponse({ status: "timerPaused", time: message.time });
     } else if (message.type === "INIT_TIMER") {
       timerType = message.timerType;
       browser.runtime.sendMessage({ type: "INIT_TIMER", timerType: message.timerType });

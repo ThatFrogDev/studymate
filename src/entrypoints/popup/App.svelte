@@ -10,6 +10,8 @@ let completedSessions = $state({
   completedShortBreaks: 0,
   completedLongBreaks: 0
 });
+
+import { time } from "@/lib/state.svelte";
 </script>
 
 <main>
@@ -21,7 +23,7 @@ let completedSessions = $state({
     <TimerType bind:timerType={timerType} bind:buttonState={buttonState} bind:completedSessions={completedSessions} />
   </div>
   <div class="pomodoro">
-    <h1 id="timer" bind:this={timer}>--:--</h1> 
+    <h1 id="timer" bind:this={timer}>{time.setMinutes}:{time.setSeconds}</h1> 
   </div>
 
   <div class="buttons">

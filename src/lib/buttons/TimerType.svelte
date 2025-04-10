@@ -14,12 +14,9 @@
       completedLongBreaks: 0
     }) }: Props = $props();
 
-
-    // Listen for RESET_TIMER messages to manually update the UI
     $effect(() => {
         browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.type === "RESET_TIMER" && message.completedSessions) {
-                // Force an update of completedSessions
                 completedSessions = { ...message.completedSessions };
             }
         });
