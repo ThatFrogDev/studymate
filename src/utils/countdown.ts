@@ -6,22 +6,24 @@
  * @returns The interval ID which can be used to clear the interval.
  */
 
-import toDoubleDigit from "./toDoubleDigit";
+export function countdown(
+  time: number,
+  onUpdate?: (timeBetween: number) => void,
+  onFinish?: () => void,
+): NodeJS.Timeout {
+  let now = Date.now();
+  let completed = now + time;
 
-export function countdown(time: number, onUpdate?: (timeBetween: number) => void, onFinish?: () => void): NodeJS.Timeout {
-    let now = Date.now();
-    let completed = now + time;
+  const countdown = setInterval(function () {
+    now = Date.now();
+    let timeBetween = completed - now;
+    if (onUpdate) onUpdate(timeBetween);
 
-    const countdown = setInterval(function() {
-      now = Date.now();
-      let timeBetween = completed - now;
-      if (onUpdate) onUpdate(timeBetween);
+    if (timeBetween <= 0) {
+      clearInterval(countdown);
+      if (onFinish) onFinish();
+    }
+  }, 500);
 
-      if (timeBetween <= 0) {
-        clearInterval(countdown);
-        if (onFinish) onFinish();
-      }
-    }, 500);
-
-    return countdown;
+  return countdown;
 }
