@@ -1,6 +1,4 @@
-import { updateTime } from "@/lib/state.svelte";
 import { countdown } from "@/utils/countdown";
-import toDoubleDigit from "@/utils/toDoubleDigit";
 
 export let timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK" = "POMODORO";
 export let completedSessions = {
@@ -15,25 +13,11 @@ let timeBetween: number;
 export default defineBackground(() => {
   console.log("info> started StudyMate", { id: browser.runtime.id });
 
-  const getMinutesSeconds = (time: number) => {
-    const minutes = toDoubleDigit(Math.floor(time / 60000) % 60);
-    const seconds = toDoubleDigit(Math.floor(time / 1000) % 60);
-    return { minutes, seconds };
-  };
-
-  const updateTimer = (time: number) => {
-    let { minutes, seconds } = getMinutesSeconds(time);
-    updateTime(minutes, seconds);
-    timeBetween = time;
-    return time;
-  };
-
   const playTimer = (time: number) => {
     interval = countdown(
       time,
       (remainingTime) => {
         timeBetween = remainingTime;
-        // Send the remaining time value directly
         browser.runtime.sendMessage({
           type: "UPDATE_TIMER",
           timeValue: remainingTime

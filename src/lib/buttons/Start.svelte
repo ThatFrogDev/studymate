@@ -22,13 +22,12 @@
 
   let {
     buttonState = $bindable("START"),
-    timer = $bindable(document.getElementById("timer")),
-    timerType = $bindable("POMODORO"),
+        timerType = $bindable("POMODORO"),
     completedSessions = $bindable({
-    completedPomodoros: 0,
-    completedShortBreaks: 0,
-    completedLongBreaks: 0,
-  })
+      completedPomodoros: 0,
+      completedShortBreaks: 0,
+      completedLongBreaks: 0,
+    })
   }: Props = $props();
 
   let timeBetween: number = $state(0);
@@ -48,9 +47,9 @@
   });
 
   const initializeTimer = (timerType: "POMODORO" | "SHORT_BREAK" | "LONG_BREAK") => {
-    switch (timerType) {
+switch (timerType) {
       case "POMODORO":
-        timeBetween = Number(pomodoro);
+    timeBetween = Number(pomodoro);
         break;
       case "SHORT_BREAK":
         timeBetween = Number(shortBreak);
@@ -59,34 +58,20 @@
         timeBetween = Number(longBreak);
         break;
     }
-
+    
     const { minutes, seconds } = getMinutesSeconds(timeBetween);
     updateTime(minutes, seconds);
   };
 
   const resetTimer = () => {
-    switch (timerType) {
-      case "POMODORO":
-        timeBetween = Number(pomodoro);
-        buttonState = "START";
-        break;
-      case "SHORT_BREAK":
-        timeBetween = Number(shortBreak);
-        buttonState = "START";
-        break;
-      case "LONG_BREAK":
-        timeBetween = Number(longBreak);
-        buttonState = "START";
-        break;
-    }
-    const { minutes, seconds } = getMinutesSeconds(timeBetween);
-    updateTime(minutes, seconds);
+    initializeTimer(timerType);
+    buttonState = "START";
   };
 
   initializeTimer(timerType);
 
   $effect(() => {
-    browser.runtime.onMessage.addListener((message, sender, onResponse) => {
+    browser.runtime.onMessage.addListener((message) => {
       if (message.type === "RESET_TIMER") {
         // TODO: Move this process to the background; e.g. in a offscreen document.
         timeUpSound.play();
@@ -99,8 +84,8 @@
           timeBetween = message.time
             .split(":")
             .reduce((acc: number, time: string, index: number) => {
-              if (index === 0) {
-                return acc + Number(time) * 60000;
+if (index === 0) {
+              return acc + Number(time) * 60000;
               } else {
                 return acc + Number(time) * 1000;
               }
@@ -119,12 +104,10 @@
     updateTime(minutes, seconds);
   });
 
-  const changeButtonState = () => {
-    buttonState = buttonState === "START" ? "PAUSE" : "START";
-  };
-
   const handleClick = async () => {
-    if (buttonState === "START") {
+    buttonState = buttonState === "START" ? "PAUSE" : "START";
+    
+    if (buttonState === "PAUSE") {
       await browser.runtime.sendMessage({
         type: "START_TIMER",
         time: timeBetween,
@@ -138,8 +121,6 @@
         timeBetween = response.time;
       }
     }
-
-    changeButtonState();
   };
 </script>
 

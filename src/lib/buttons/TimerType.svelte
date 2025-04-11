@@ -8,11 +8,15 @@
         completedSessions?: any;
     }
 
-    let { timerType = $bindable("POMODORO"), buttonState = $bindable("START"), completedSessions = $bindable({
-      completedPomodoros: 0,
-      completedShortBreaks: 0,
-      completedLongBreaks: 0
-    }) }: Props = $props();
+    let { 
+        timerType = $bindable("POMODORO"), 
+        buttonState = $bindable("START"), 
+        completedSessions = $bindable({
+        completedPomodoros: 0,
+        completedShortBreaks: 0,
+        completedLongBreaks: 0
+        }) 
+    }: Props = $props();
 
     $effect(() => {
         browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
